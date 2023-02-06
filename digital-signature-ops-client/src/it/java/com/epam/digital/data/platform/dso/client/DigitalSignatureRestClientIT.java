@@ -16,6 +16,7 @@ import com.epam.digital.data.platform.dso.api.dto.VerificationResponseDto;
 import com.epam.digital.data.platform.dso.client.config.DigitalOpsFeignConfig;
 import com.epam.digital.data.platform.dso.client.exception.BadRequestException;
 import com.epam.digital.data.platform.dso.client.exception.InternalServerErrorException;
+import com.epam.digital.data.platform.dso.client.exception.InvalidSignatureException;
 import com.epam.digital.data.platform.dso.client.exception.SignatureValidationException;
 import com.epam.digital.data.platform.dso.client.it.config.WireMockConfig;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -101,6 +102,26 @@ class DigitalSignatureRestClientIT {
         InternalServerErrorException.class, () -> digitalSignatureRestClient.verifyOfficer(REQ));
     
     assertEquals(internalError, badRequestException.getErrorDto().message);
+  }
+
+  @Test
+  void invalidSignatureException() throws JsonProcessingException {
+    String internalError = "internalError";
+    ErrorDto resp = ErrorDto.builder().message(internalError).build();
+    restClientWireMock.addStubMapping(
+        stubFor(post(urlEqualTo(BASE_URL + VERIFY))
+            .withRequestBody(equalTo(objectMapper.writeValueAsString(REQ)))
+            .willReturn(aResponse()
+                .withHeader("Content-Type", "application/json")
+                .withStatus(412)
+                .withBody(objectMapper.writeValueAsString(resp)))
+        )
+    );
+
+    InvalidSignatureException exception = assertThrows(
+        InvalidSignatureException.class, () -> digitalSignatureRestClient.verifyOfficer(REQ));
+
+    assertEquals(internalError, exception.getMessage());
   }
 
   @Test
