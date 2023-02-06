@@ -19,6 +19,7 @@ package com.epam.digital.data.platform.dso.client.decoder;
 import com.epam.digital.data.platform.dso.api.dto.ErrorDto;
 import com.epam.digital.data.platform.dso.client.exception.BadRequestException;
 import com.epam.digital.data.platform.dso.client.exception.InternalServerErrorException;
+import com.epam.digital.data.platform.dso.client.exception.InvalidSignatureException;
 import com.epam.digital.data.platform.dso.client.exception.SignatureValidationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.Response;
@@ -43,25 +44,29 @@ public class DigitalSignatureDecoder implements ErrorDecoder {
     this.objectMapper = objectMapper;
   }
 
-  @SneakyThrows
+
   @Override
   public Exception decode(String methodKey, Response response) {
     if (response.status() == 400) {
-      return new BadRequestException(objectMapper
-          .readValue(Util.toByteArray(response.body().asInputStream()), objectMapper.constructType(
-              ErrorDto.class)));
+      return new BadRequestException(getErrorDto(response));
     }
     if (response.status() == 500) {
-      return new InternalServerErrorException(objectMapper
-          .readValue(Util.toByteArray(response.body().asInputStream()), objectMapper.constructType(
-              ErrorDto.class)));
+      return new InternalServerErrorException(getErrorDto(response));
     }
     if (response.status() == 422) {
-      return new SignatureValidationException(objectMapper
-          .readValue(Util.toByteArray(response.body().asInputStream()), objectMapper.constructType(
-              ErrorDto.class)));
+      return new SignatureValidationException(getErrorDto(response));
+    }
+    if (response.status() == 412) {
+      return new InvalidSignatureException(getErrorDto(response).getMessage());
     }
     return errorDecoderChain.decode(methodKey, response);
+  }
+
+  @SneakyThrows
+  private ErrorDto getErrorDto(Response response){
+    return objectMapper
+        .readValue(Util.toByteArray(response.body().asInputStream()), objectMapper.constructType(
+            ErrorDto.class));
   }
 
 }
