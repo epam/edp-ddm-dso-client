@@ -13,7 +13,7 @@
   <artifactId>digital-signature-ops-client</artifactId>
 
   <properties>
-    <feign-annotation-error-decoder.version>1.4.0</feign-annotation-error-decoder.version>
+    <feign-annotation-error-decoder.version>11.7</feign-annotation-error-decoder.version>
   </properties>
 
   <dependencies>
