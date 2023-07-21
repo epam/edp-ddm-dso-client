@@ -6,7 +6,7 @@
 
   <groupId>com.epam.digital.data.platform</groupId>
   <artifactId>ddm-dso-client</artifactId>
-  <version>1.6.0</version>
+  <version>1.9.6</version>
   <name>ddm-dso-client-parent</name>
   <description>Digital signature ops client</description>
   <packaging>pom</packaging>

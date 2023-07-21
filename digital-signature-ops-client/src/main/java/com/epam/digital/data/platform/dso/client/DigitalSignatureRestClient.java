@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 EPAM Systems.
+ * Copyright 2023 EPAM Systems.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,13 @@
 
 package com.epam.digital.data.platform.dso.client;
 
+import com.epam.digital.data.platform.dso.api.dto.ContentDto;
 import com.epam.digital.data.platform.dso.api.dto.OwnerResponseDto;
+import com.epam.digital.data.platform.dso.api.dto.SignDataResponseDto;
+import com.epam.digital.data.platform.dso.api.dto.SignDetailsDto;
+import com.epam.digital.data.platform.dso.api.dto.SignInfoRequestDto;
+import com.epam.digital.data.platform.dso.api.dto.SignatureInfoResponseDto;
+import com.epam.digital.data.platform.dso.api.dto.ValidationResponseDto;
 import com.epam.digital.data.platform.dso.api.dto.VerificationRequestDto;
 import com.epam.digital.data.platform.dso.api.dto.VerificationResponseDto;
 import com.epam.digital.data.platform.dso.api.dto.VerifySubjectRequestDto;
@@ -24,7 +30,9 @@ import com.epam.digital.data.platform.dso.api.dto.VerifySubjectResponseDto;
 import com.epam.digital.data.platform.dso.client.config.DigitalOpsFeignConfig;
 import feign.error.ErrorHandling;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 
 /**
@@ -80,4 +88,43 @@ public interface DigitalSignatureRestClient {
   @ErrorHandling
   @PostMapping("/owner-infinite")
   OwnerResponseDto getOwnerInfinite(VerificationRequestDto verifyRequestDto);
+
+  /**
+   * Validates provided signed data using the passed container type.
+   *
+   * @param signInfoRequestDto request object with data that includes a signature in Base64 format
+   *                           and container type.
+   * @param headers            http headers
+   * @return {@link ValidationResponseDto} response indicating the result of the validation process.
+   */
+  @ErrorHandling
+  @PostMapping("/validate")
+  ValidationResponseDto validate(SignInfoRequestDto signInfoRequestDto,
+      @RequestHeader HttpHeaders headers);
+
+  /**
+   * Retrieves a list of {@link SignDetailsDto} from signed data using the passed container type.
+   *
+   * @param signInfoRequestDto request object with data that includes a signature in Base64 format
+   *                           and container type.
+   * @param headers            http headers
+   * @return {@link SignatureInfoResponseDto} representing the signature details.
+   */
+  @ErrorHandling
+  @PostMapping("/info")
+  SignatureInfoResponseDto info(SignInfoRequestDto signInfoRequestDto,
+      @RequestHeader HttpHeaders headers);
+
+  /**
+   * Retrieves a list of {@link ContentDto} from signed data using the passed container type.
+   *
+   * @param signInfoRequestDto request object with data that includes a signature in Base64 format
+   *                           and container type.
+   * @param headers            http headers
+   * @return {@link SignDataResponseDto} representing the signature content.
+   */
+  @ErrorHandling
+  @PostMapping("/content")
+  SignDataResponseDto content(SignInfoRequestDto signInfoRequestDto,
+      @RequestHeader HttpHeaders headers);
 }

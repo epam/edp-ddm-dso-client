@@ -7,7 +7,7 @@
   <parent>
     <artifactId>ddm-dso-client</artifactId>
     <groupId>com.epam.digital.data.platform</groupId>
-    <version>1.6.0</version>
+    <version>1.9.6</version>
   </parent>
 
   <artifactId>digital-signature-ops-client</artifactId>
