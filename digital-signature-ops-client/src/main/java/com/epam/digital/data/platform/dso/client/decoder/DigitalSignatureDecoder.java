@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 EPAM Systems.
+ * Copyright 2023 EPAM Systems.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,13 +57,14 @@ public class DigitalSignatureDecoder implements ErrorDecoder {
       return new SignatureValidationException(getErrorDto(response));
     }
     if (response.status() == 412) {
-      return new InvalidSignatureException(getErrorDto(response).getMessage());
+      var error = getErrorDto(response);
+      return new InvalidSignatureException(error.getMessage(), error);
     }
     return errorDecoderChain.decode(methodKey, response);
   }
 
   @SneakyThrows
-  private ErrorDto getErrorDto(Response response){
+  private ErrorDto getErrorDto(Response response) {
     return objectMapper
         .readValue(Util.toByteArray(response.body().asInputStream()), objectMapper.constructType(
             ErrorDto.class));

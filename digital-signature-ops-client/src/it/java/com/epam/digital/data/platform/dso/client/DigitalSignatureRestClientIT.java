@@ -147,6 +147,7 @@ class DigitalSignatureRestClientIT {
         InvalidSignatureException.class, () -> digitalSignatureRestClient.verifyOfficer(REQ));
 
     assertEquals(internalError, exception.getMessage());
+    assertEquals(internalError, exception.getErrorDto().getMessage());
   }
 
   @Test

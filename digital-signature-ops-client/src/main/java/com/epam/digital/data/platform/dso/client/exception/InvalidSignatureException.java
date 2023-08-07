@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 EPAM Systems.
+ * Copyright 2023 EPAM Systems.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,9 +16,14 @@
 
 package com.epam.digital.data.platform.dso.client.exception;
 
-public class InvalidSignatureException extends RuntimeException {
+import com.epam.digital.data.platform.dso.api.dto.ErrorDto;
+
+public class InvalidSignatureException extends BaseException {
 
   public InvalidSignatureException(String msg) {
     super(msg);
+  }
+  public InvalidSignatureException(String msg, ErrorDto errorDto) {
+    super(msg, errorDto);
   }
 }
